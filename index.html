@@ -30,7 +30,7 @@ button{border:0;cursor:pointer}
 .app{width:min(1400px,calc(100vw - 24px));margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 0 max(28px,env(safe-area-inset-bottom));position:relative;z-index:1}
 header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:8px 0 16px}
 .kicker{color:var(--accent);text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;font-weight:950}
-h1{margin:2px 0 0;font-size:clamp(2.3rem,12vw,5rem);line-height:.86;letter-spacing:-.08em;text-transform:uppercase}
+h1{margin:2px 0 0;font-size:clamp(2.3rem,12vw,5rem);line-height:.94;letter-spacing:-.03em;text-transform:uppercase}
 .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .chip,.secondary,.danger,.primary{border-radius:999px;font-weight:950}
 .chip{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line);padding:10px 13px;font-size:.86rem}
@@ -39,7 +39,7 @@ h1{margin:2px 0 0;font-size:clamp(2.3rem,12vw,5rem);line-height:.86;letter-spaci
 .wheel-panel{padding:14px;overflow:hidden}
 .status{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:12px;border-radius:20px;background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.09);padding:14px}
 .label{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:950}
-#currentPick{margin-top:3px;font-size:clamp(1.45rem,7.5vw,2.8rem);line-height:.9;font-weight:1000;letter-spacing:-.06em;text-transform:uppercase}
+#currentPick{margin-top:3px;font-size:clamp(1.45rem,7.5vw,2.8rem);line-height:.96;font-weight:1000;letter-spacing:-.02em;text-transform:uppercase}
 .week{white-space:nowrap;color:var(--muted);border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);border-radius:999px;padding:9px 11px;font-size:.82rem;font-weight:850}
 .stage{display:grid;place-items:center;min-height:min(100vw,670px)}
 .wheel-wrap{width:var(--wheel);height:var(--wheel);position:relative;display:grid;place-items:center;touch-action:none;user-select:none}
@@ -49,7 +49,7 @@ canvas{width:100%;height:100%;border-radius:50%;display:block;filter:drop-shadow
 @keyframes tick{50%{transform:translateX(-50%) translateY(-6px) scale(1.08)}}
 .hub{position:absolute;z-index:5;width:34%;height:34%;border-radius:50%;display:grid;place-items:center;text-align:center;color:var(--text);background:radial-gradient(circle at 35% 22%,rgba(255,255,255,.34),transparent 27%),linear-gradient(135deg,#362b20,#151515 60%,#050505);border:2px solid rgba(243,196,98,.82);box-shadow:inset 0 0 0 8px rgba(255,255,255,.035),0 16px 40px rgba(0,0,0,.52),0 0 40px rgba(243,196,98,.18);padding:10px;animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:inset 0 0 0 8px rgba(255,255,255,.05),0 18px 48px rgba(0,0,0,.55),0 0 58px rgba(243,196,98,.30)}}
-.hub strong{display:block;color:var(--accent);text-transform:uppercase;font-weight:1000;line-height:.92;letter-spacing:-.04em;font-size:clamp(.9rem,3.6vw,1.45rem)}
+.hub strong{display:block;color:var(--accent);text-transform:uppercase;font-weight:1000;line-height:1;letter-spacing:0;font-size:clamp(.9rem,3.6vw,1.45rem)}
 .hub span{display:block;margin-top:7px;color:var(--muted);font-size:clamp(.6rem,2vw,.78rem);text-transform:uppercase;letter-spacing:.09em;font-weight:850}
 .hub.locked{animation:none;opacity:.68}
 .side{padding:14px;display:grid;gap:12px}
@@ -87,7 +87,7 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
 .pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .pill button{width:24px;height:24px;border-radius:999px;background:rgba(0,0,0,.28);color:var(--text);font-weight:1000}
 .modal{text-align:center;max-width:520px;position:relative;overflow:hidden;animation:pop .28s ease forwards}
 @keyframes pop{from{transform:scale(.96) translateY(8px)}to{transform:scale(1) translateY(0)}}
-.selected{margin:16px 0 8px;font-size:clamp(2.5rem,12vw,5.2rem);line-height:.82;letter-spacing:-.08em;text-transform:uppercase;font-weight:1000;text-shadow:0 0 38px rgba(243,196,98,.25)}
+.selected{margin:16px 0 8px;font-size:clamp(2.5rem,12vw,5.2rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;font-weight:1000;text-shadow:0 0 38px rgba(243,196,98,.25)}
 .modal-actions{display:grid;gap:8px;margin-top:18px}
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:80;background:rgba(20,20,20,.94);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:11px 14px;box-shadow:0 22px 70px rgba(0,0,0,.46);font-weight:800;display:none}
 .toast.active{display:block}
@@ -128,8 +128,8 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
 .share-knife {
   margin: 10px 0;
   font-size: clamp(2rem, 9vw, 4.5rem);
-  line-height: .82;
-  letter-spacing: -.08em;
+  line-height: .9;
+  letter-spacing: -.02em;
   text-transform: uppercase;
   font-weight: 1000;
 }
