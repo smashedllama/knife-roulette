@@ -63,6 +63,8 @@ canvas{width:100%;height:100%;border-radius:50%;display:block;filter:drop-shadow
 .button-group .label{padding-left:2px}
 .button-group + .button-group{margin-top:4px}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.icon-btn{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:900}
 .primary,.secondary,.danger{width:100%;padding:13px 14px}
 .primary{background:linear-gradient(135deg,var(--accent),#f18c37);color:#16100a}
 .secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}
@@ -225,21 +227,8 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
   </div>
 </div>
 <div class="stats"><div class="stat"><b id="remainingCount">—</b><span>remaining</span></div><div class="stat"><b id="usedCount">—</b><span>used</span></div><div class="stat"><b id="totalCount">—</b><span>total</span></div></div>
-<div class="button-group"><div class="label">Spin</div><div class="buttons"><button class="primary" id="spinBtn">Tap to spin</button><button class="secondary" id="soundBtn">Sound: on</button></div></div>
-<details open><summary>Settings menu</summary><div class="list"><div class="menu-grid"><button class="secondary" id="settingsBtn">Full settings</button><button class="secondary" id="shareBtn">Copy link</button><button class="secondary" id="addKnivesBtnMenu">Add knives</button><button class="secondary" id="soundBtnMenu">Sound: on</button><button class="secondary" id="undoBtn">Undo</button><button class="danger" id="resetUsedBtn">Reset used</button><button class="secondary" id="exportBtn">Export</button><button class="secondary" id="importBtn">Import</button></div></div></details>
+<div class="button-group"><div class="label">Spin</div><div class="buttons"><button class="primary" id="spinBtn">Tap to spin</button><button class="secondary" id="openSettingsModalBtn">Settings</button></div></div>
 <input class="file-input" type="file" id="importFile" accept="application/json,.json">
-<details><summary>Knives in the wheel</summary><div class="list" id="itemList"></div></details>
-<details open><summary>History</summary><div class="list" id="historyList">No history yet.</div></details>
-<details><summary>FAQ</summary><div class="list">
-<strong>How does this work?</strong><br>
-Add at least two knives, then spin and lock one knife for the current week.<br><br>
-<strong>How do I add new knives later?</strong><br>
-Use <em>Add knives</em> to open setup, add names, then press <em>Save and start</em>.<br><br>
-<strong>When can I spin again?</strong><br>
-After you lock a pick, spinning is disabled until the next week starts.<br><br>
-<strong>What does Reset used do?</strong><br>
-It clears the used list and unlocks the current week so you can start over.
-</div></details>
 </aside>
 </main>
 </div>
@@ -258,6 +247,31 @@ It clears the used list and unlocks the current week so you can start over.
 </div></div></section>
 
 <section class="overlay" id="resultModal"><div class="modal"><div class="label">This week’s knife is</div><div class="selected" id="selectedName">—</div><div class="modal-actions"><button class="primary" id="acceptPickBtn">Lock it in</button></div></div></section>
+<section class="overlay" id="settingsModal"><div class="modal" style="max-width:760px;text-align:left;">
+<div class="menu-head"><div class="label">Settings menu</div><button class="icon-btn" id="closeSettingsModalBtn" type="button">Close</button></div>
+<div class="menu-grid">
+  <button class="secondary" id="settingsBtn">Full settings</button>
+  <button class="secondary" id="addKnivesBtnMenu">Add knives</button>
+  <button class="secondary" id="shareBtn">Copy link</button>
+  <button class="secondary" id="soundBtnMenu">Sound: on</button>
+  <button class="secondary" id="undoBtn">Undo</button>
+  <button class="danger" id="resetUsedBtn">Reset used</button>
+  <button class="secondary" id="exportBtn">Export</button>
+  <button class="secondary" id="importBtn">Import</button>
+</div>
+<details open><summary>Knives in the wheel</summary><div class="list" id="itemList"></div></details>
+<details open><summary>History</summary><div class="list" id="historyList">No history yet.</div></details>
+<details><summary>FAQ</summary><div class="list">
+<strong>How does this work?</strong><br>
+Add at least two knives, then spin and lock one knife for the current week.<br><br>
+<strong>How do I add new knives later?</strong><br>
+Use <em>Add knives</em> to open setup, add names, then press <em>Save and start</em>.<br><br>
+<strong>When can I spin again?</strong><br>
+After you lock a pick, spinning is disabled until the next week starts.<br><br>
+<strong>What does Reset used do?</strong><br>
+It clears the used list and unlocks the current week so you can start over.
+</div></details>
+</div></section>
 <div class="toast" id="toast">Saved</div>
 
 <script>
@@ -397,11 +411,15 @@ function openSettings(){draftItems=config.items.slice();renderPills();document.g
 function openSettingsForAdd(){openSettings();setTimeout(()=>document.getElementById("singleKnifeInput")?.focus(),0)}
 function closeSettings(){document.getElementById("setupOverlay").classList.remove("active")}
 function saveSetup(){if(draftItems.length<2){alert("Add at least two knives to spin the wheel.");return}const next={rules:document.getElementById("setupRules").value.trim()||"One knife for the week.",weekStart:document.getElementById("setupWeekStart").value,cheatDay:document.getElementById("setupCheatDay").value,items:draftItems.slice()};const old=config.items.join("|");saveConfig(next);if(old!==next.items.join("|")){setUsed([]);clearLock()}closeSettings();applyUI();toast("Saved.")}
-function syncSoundLabels(){const txt=soundEnabled?"Sound: on":"Sound: off";document.getElementById("soundBtn").textContent=txt;const menu=document.getElementById("soundBtnMenu");if(menu)menu.textContent=txt}
+function syncSoundLabels(){const txt=soundEnabled?"Sound: on":"Sound: off";const menu=document.getElementById("soundBtnMenu");if(menu)menu.textContent=txt}
 function toggleSound(){soundEnabled=!soundEnabled;localStorage.setItem("knifeRouletteSoundCleanV1",soundEnabled?"on":"off");syncSoundLabels();if(soundEnabled){audio();tickSound(1)}}
+function openSettingsModal(){document.getElementById("settingsModal").classList.add("active")}
+function closeSettingsModal(){document.getElementById("settingsModal").classList.remove("active")}
 syncSoundLabels();
 wrap.addEventListener("pointerdown",beginDrag);wrap.addEventListener("pointermove",moveDrag);wrap.addEventListener("pointerup",endDrag);wrap.addEventListener("pointercancel",endDrag);
-document.getElementById("spinBtn").onclick=spin;document.getElementById("acceptPickBtn").onclick=acceptPick;document.getElementById("undoBtn").onclick=undo;document.getElementById("resetUsedBtn").onclick=resetUsed;document.getElementById("settingsBtn").onclick=openSettings;document.getElementById("soundBtn").onclick=toggleSound;
+document.getElementById("spinBtn").onclick=spin;document.getElementById("acceptPickBtn").onclick=acceptPick;document.getElementById("undoBtn").onclick=undo;document.getElementById("resetUsedBtn").onclick=resetUsed;document.getElementById("settingsBtn").onclick=openSettings;
+document.getElementById("openSettingsModalBtn").onclick=openSettingsModal;
+document.getElementById("closeSettingsModalBtn").onclick=closeSettingsModal;
 document.getElementById("addKnivesBtnMenu").onclick=openSettingsForAdd;
 document.getElementById("soundBtnMenu").onclick=toggleSound;
 document.getElementById("keepBtn").onclick=()=>setVerdict("keep");
@@ -419,6 +437,7 @@ document.getElementById("loadDemoBtn").onclick=()=>{draftItems=DEMO_ITEMS.slice(
 document.getElementById("clearKnivesBtn").onclick=()=>{if(!draftItems.length||confirm("Clear all knives from this setup screen?")){draftItems=[];renderPills()}};
 document.getElementById("setupOverlay").addEventListener("click",e=>{if(e.target.id==="setupOverlay"&&config.items.length)closeSettings()});
 document.getElementById("resultModal").addEventListener("click",e=>{if(e.target.id==="resultModal")document.getElementById("resultModal").classList.remove("active")});
+document.getElementById("settingsModal").addEventListener("click",e=>{if(e.target.id==="settingsModal")closeSettingsModal()});
 if(!config||!config.items||config.items.length<2){config={...DEFAULT_CONFIG,items:[]};document.getElementById("setupOverlay").classList.add("active")}
 addEventListener("resize",drawWheel);setInterval(refreshLock,60000);applyUI();requestAnimationFrame(drawWheel);setTimeout(drawWheel,100);setTimeout(drawWheel,500);
 </script>
