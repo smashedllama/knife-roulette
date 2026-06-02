@@ -98,7 +98,16 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
 @keyframes fall{to{transform:translateY(110vh) rotate(580deg);opacity:0}}
 @media(min-width:900px){.grid{grid-template-columns:1.04fr .82fr;align-items:start;gap:18px}.wheel-panel,.side{padding:18px}.overlay{align-items:center}.sheet,.modal{padding:26px}}
 @media(min-width:1300px){:root{--wheel:min(56vw,760px)}.app{width:min(1560px,calc(100vw - 40px));padding-top:10px;padding-bottom:14px}.stage{min-height:auto;padding:4px 0 0}.status{padding:12px}.wheel-panel,.side{padding:14px}h1{font-size:clamp(2rem,5.4vw,4.8rem)}}
+@media(max-width:700px){
+  :root{--wheel:min(calc(100vw - 72px),620px)}
+  .app{width:100%;padding:max(16px,env(safe-area-inset-top)) 12px max(28px,env(safe-area-inset-bottom))}
+  h1{font-size:2.65rem;letter-spacing:0;white-space:nowrap}
+  .wheel-panel{padding:12px}
+  .stage{min-height:calc(var(--wheel) + 42px);justify-items:center}
+  .wheel-wrap{margin-inline:auto}
+}
 @media(max-width:460px){.actions{max-width:130px}.chip{font-size:.78rem;padding:9px 10px}.status{grid-template-columns:1fr}.week{justify-self:start}.two,.addrow{grid-template-columns:1fr}}
+@media(max-width:370px){h1{font-size:2.35rem}}
 
 .share-card {
   margin-top: 14px;
