@@ -59,6 +59,9 @@ canvas{width:100%;height:100%;border-radius:50%;display:block;filter:drop-shadow
 .stat{padding:13px 10px;border-radius:17px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.085)}
 .stat b{display:block;font-size:1.35rem;line-height:1} .stat span{display:block;margin-top:4px;color:var(--muted);font-size:.73rem;font-weight:780}
 .buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.button-group{display:grid;gap:8px}
+.button-group .label{padding-left:2px}
+.button-group + .button-group{margin-top:4px}
 .primary,.secondary,.danger{width:100%;padding:13px 14px}
 .primary{background:linear-gradient(135deg,var(--accent),#f18c37);color:#16100a}
 .secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}
@@ -220,11 +223,22 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
   </div>
 </div>
 <div class="stats"><div class="stat"><b id="remainingCount">—</b><span>remaining</span></div><div class="stat"><b id="usedCount">—</b><span>used</span></div><div class="stat"><b id="totalCount">—</b><span>total</span></div></div>
-<div class="buttons"><button class="primary" id="spinBtn">Tap to spin</button><button class="secondary" id="soundBtn">Sound: on</button><button class="secondary" id="undoBtn">Undo</button><button class="danger" id="resetUsedBtn">Reset used</button></div>
-<div class="buttons"><button class="secondary" id="exportBtn">Export</button><button class="secondary" id="importBtn">Import</button></div>
+<div class="button-group"><div class="label">Spin</div><div class="buttons"><button class="primary" id="spinBtn">Tap to spin</button><button class="secondary" id="soundBtn">Sound: on</button></div></div>
+<div class="button-group"><div class="label">Manage</div><div class="buttons"><button class="secondary" id="addKnivesBtn">Add knives</button><button class="secondary" id="undoBtn">Undo</button><button class="danger" id="resetUsedBtn">Reset used</button><button class="secondary" id="settingsBtnInline">Full settings</button></div></div>
+<div class="button-group"><div class="label">Data</div><div class="buttons"><button class="secondary" id="exportBtn">Export</button><button class="secondary" id="importBtn">Import</button></div></div>
 <input class="file-input" type="file" id="importFile" accept="application/json,.json">
 <details><summary>Knives in the wheel</summary><div class="list" id="itemList"></div></details>
 <details open><summary>History</summary><div class="list" id="historyList">No history yet.</div></details>
+<details><summary>FAQ</summary><div class="list">
+<strong>How does this work?</strong><br>
+Add at least two knives, then spin and lock one knife for the current week.<br><br>
+<strong>How do I add new knives later?</strong><br>
+Use <em>Add knives</em> to open setup, add names, then press <em>Save and start</em>.<br><br>
+<strong>When can I spin again?</strong><br>
+After you lock a pick, spinning is disabled until the next week starts.<br><br>
+<strong>What does Reset used do?</strong><br>
+It clears the used list and unlocks the current week so you can start over.
+</div></details>
 </aside>
 </main>
 </div>
@@ -378,12 +392,15 @@ function acceptPick(){if(!pendingPick)return;const used=getUsed();lastUsedSnapsh
 function undo(){if(!lastUsedSnapshot){toast("Nothing to undo.");return}setUsed(lastUsedSnapshot);clearLock();lastAcceptedPick=null;lastUsedSnapshot=null;document.getElementById("currentPick").textContent="Pick undone";stats();refreshLock()}
 function resetUsed(){if(!confirm("Reset used knives and start the wheel over?"))return;setUsed([]);clearLock();lastAcceptedPick=null;lastUsedSnapshot=null;document.getElementById("currentPick").textContent="Tap or swipe to spin";stats();refreshLock()}
 function openSettings(){draftItems=config.items.slice();renderPills();document.getElementById("setupOverlay").classList.add("active")}
+function openSettingsForAdd(){openSettings();setTimeout(()=>document.getElementById("singleKnifeInput")?.focus(),0)}
 function closeSettings(){document.getElementById("setupOverlay").classList.remove("active")}
 function saveSetup(){if(draftItems.length<2){alert("Add at least two knives to spin the wheel.");return}const next={rules:document.getElementById("setupRules").value.trim()||"One knife for the week.",weekStart:document.getElementById("setupWeekStart").value,cheatDay:document.getElementById("setupCheatDay").value,items:draftItems.slice()};const old=config.items.join("|");saveConfig(next);if(old!==next.items.join("|")){setUsed([]);clearLock()}closeSettings();applyUI();toast("Saved.")}
 function toggleSound(){soundEnabled=!soundEnabled;localStorage.setItem("knifeRouletteSoundCleanV1",soundEnabled?"on":"off");document.getElementById("soundBtn").textContent=soundEnabled?"Sound: on":"Sound: off";if(soundEnabled){audio();tickSound(1)}}
 document.getElementById("soundBtn").textContent=soundEnabled?"Sound: on":"Sound: off";
 wrap.addEventListener("pointerdown",beginDrag);wrap.addEventListener("pointermove",moveDrag);wrap.addEventListener("pointerup",endDrag);wrap.addEventListener("pointercancel",endDrag);
 document.getElementById("spinBtn").onclick=spin;document.getElementById("acceptPickBtn").onclick=acceptPick;document.getElementById("undoBtn").onclick=undo;document.getElementById("resetUsedBtn").onclick=resetUsed;document.getElementById("settingsBtn").onclick=openSettings;document.getElementById("soundBtn").onclick=toggleSound;
+document.getElementById("addKnivesBtn").onclick=openSettingsForAdd;
+document.getElementById("settingsBtnInline").onclick=openSettings;
 document.getElementById("keepBtn").onclick=()=>setVerdict("keep");
 document.getElementById("sellBtn").onclick=()=>setVerdict("sell");
 document.getElementById("exportBtn").onclick=exportData;
