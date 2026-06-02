@@ -81,6 +81,8 @@ textarea{min-height:126px;resize:vertical;line-height:1.35}
 .pills{min-height:92px;border:1px solid rgba(255,255,255,.13);background:rgba(0,0,0,.2);border-radius:18px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
 .pill{display:inline-flex;align-items:center;gap:8px;max-width:100%;background:rgba(243,196,98,.14);border:1px solid rgba(243,196,98,.24);border-radius:999px;padding:8px 9px 8px 12px;font-weight:850;font-size:.9rem}
 .pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .pill button{width:24px;height:24px;border-radius:999px;background:rgba(0,0,0,.28);color:var(--text);font-weight:1000}
+.pill-input{flex:1 1 220px;min-width:170px;border:0;background:transparent;color:var(--text);padding:8px 4px;outline:none;font-weight:760}
+.pill-input::placeholder{color:var(--muted)}
 .modal{text-align:center;max-width:520px;position:relative;overflow:hidden;animation:pop .28s ease forwards}
 @keyframes pop{from{transform:scale(.96) translateY(8px)}to{transform:scale(1) translateY(0)}}
 .selected{margin:16px 0 8px;font-size:clamp(2.5rem,12vw,5.2rem);line-height:.82;letter-spacing:-.08em;text-transform:uppercase;font-weight:1000;text-shadow:0 0 38px rgba(243,196,98,.25)}
@@ -263,7 +265,27 @@ function setUsed(u){localStorage.setItem(usedKey(),JSON.stringify(u))}
 function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("active");setTimeout(()=>t.classList.remove("active"),1600)}
 function parseItems(t){return t.split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean)}
 function addDraftItems(items){let a=0;items.forEach(item=>{if(!draftItems.some(e=>e.toLowerCase()===item.toLowerCase())){draftItems.push(item);a++}});renderPills();if(a)toast(`${a} added.`)}
-function renderPills(){const box=document.getElementById("pillBox"), help=document.getElementById("pillHelp");help.textContent=draftItems.length?`${draftItems.length} ${draftItems.length===1?"knife":"knives"} ready.`:"Add at least two knives.";box.innerHTML=draftItems.map((item,i)=>`<div class="pill"><span>${esc(item)}</span><button type="button" onclick="removeDraftItem(${i})">×</button></div>`).join("")}
+function renderPills(){
+  const box=document.getElementById("pillBox"), help=document.getElementById("pillHelp");
+  help.textContent=draftItems.length?`${draftItems.length} ${draftItems.length===1?"knife":"knives"} ready.`:"Add at least two knives.";
+  box.innerHTML=
+    draftItems.map((item,i)=>`<div class="pill"><span>${esc(item)}</span><button type="button" onclick="removeDraftItem(${i})">×</button></div>`).join("")+
+    `<input id="pillInput" class="pill-input" placeholder="Type here and press Enter">`;
+  const input=document.getElementById("pillInput");
+  input.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===","){
+      e.preventDefault();
+      addDraftItems(parseItems(input.value));
+      input.value="";
+    }
+  });
+  input.addEventListener("blur",()=>{
+    if(input.value.trim()){
+      addDraftItems(parseItems(input.value));
+      input.value="";
+    }
+  });
+}
 function removeDraftItem(i){draftItems.splice(i,1);renderPills()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function weekBounds(d=new Date()){const sd=Number(config.weekStart||1), x=new Date(d);x.setHours(0,0,0,0);const diff=(x.getDay()-sd+7)%7;const start=new Date(x);start.setDate(x.getDate()-diff);const end=new Date(start);end.setDate(start.getDate()+7);return{start,end}}
